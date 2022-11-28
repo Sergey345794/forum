@@ -52,7 +52,7 @@ public class ForumServicImpl implements ForumService {
 
 	@Override
 	public PostDto findPostByAutor(String author) {
-		Post post = forumRepository.findPostByAuthor(author).orElseThrow(() -> new NotExistException());
+		List<Post> post = forumRepository.findPostByAuthor(author);
 		return modelMapper.map(post, PostDto.class);
 	}
 

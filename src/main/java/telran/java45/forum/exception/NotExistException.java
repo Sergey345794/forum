@@ -14,8 +14,6 @@ public class NotExistException extends RuntimeException {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public NotExistException(int id) {
-		super("Student with id " + id + " not found");
-	}
+	
 
 }
