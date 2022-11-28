@@ -15,7 +15,8 @@ import telran.java45.forum.model.Post;
 
 public interface ForumRepository extends CrudRepository<Post, String> {
 	List<Post> findPostByAuthor(String author);	
-	Post findPostByTagsInIgnoreCase(String tags);
+	
+	List<Post> findPostByTagsInIgnoreCase(List<String> tags);
 	
 	@Query("{'dateCreated': {$lt: ?0, $gt: ?1}}")
 	Stream<Post> findPostsInPeriod(LocalDate min, LocalDate max);

@@ -73,8 +73,7 @@ public class ForumServicImpl implements ForumService {
 
 	@Override
 	public List<PostDto> findPostByTegs(List<String> tags) {
-		List<Post> post = tags.stream().map(t -> forumRepository.findPostByTagsInIgnoreCase(t))
-			.collect(Collectors.toList());
+		List<Post> post = forumRepository.findPostByTagsInIgnoreCase(tags);
 		List<PostDto> postsDto = post.stream().map(p -> modelMapper.map(p, PostDto.class))
 				.collect(Collectors.toList());
 		return postsDto;
