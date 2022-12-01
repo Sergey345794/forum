@@ -16,7 +16,7 @@ import telran.java45.forum.dto.CommentDto;
 @Getter
 @EqualsAndHashCode(of = "id")
 public class Post {
-	int id;
+	String id;
 	@Setter
 	String title;
 	@Setter
@@ -29,8 +29,7 @@ public class Post {
 	Integer likes;
 	List<Comment> comments = new ArrayList<>();
 
-	public Post(int id, String title, String content, String author, LocalDate dateCreated, List<String> tags) {
-		this.id = id;
+	public Post(String title, String content, String author, LocalDate dateCreated, List<String> tags) {
 		this.title = title;
 		this.content = content;
 		this.author = author;
