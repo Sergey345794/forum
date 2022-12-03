@@ -1,5 +1,6 @@
 package telran.java45.forum.ecouting.controller;
 
+import java.security.Principal;
 import java.util.Base64;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,9 +32,8 @@ public class UserEcountComtroller {
 	}
 	
 	@PostMapping("/login")
-	public UserAccountResponseDto login(@RequestHeader("Authorization") String token) {
-		String[] credantialStrings = getCredentials(token);
-		return accService.getUser(credantialStrings[0]);
+	public UserAccountResponseDto login(Principal principal) {
+		return accService.getUser(principal.getName());
 		
 	}
 	
@@ -63,10 +63,8 @@ public class UserEcountComtroller {
 	}
 	
 	@PutMapping("/user/password")
-	public UserAccountResponseDto changePassword(@RequestParam String user, @RequestParam String password) {
-		accService.changePassword(user, password);
-		return accService.getUser(user);
-		
+	public void changePassword(Principal principal , @RequestHeader("X-Password") String password) {
+		accService.changePassword(principal.getName(), password);		
 	}
 	
 	
@@ -74,9 +72,4 @@ public class UserEcountComtroller {
 	
 	
 	
-	private String[] getCredentials(String token) {
-		String[] basicAuth = token.split(" ");
-		String decode = new String(Base64.getDecoder().decode(basicAuth[1]));
-		return decode.split(":");
-	}
 }

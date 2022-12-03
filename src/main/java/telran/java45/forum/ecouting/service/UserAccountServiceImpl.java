@@ -2,7 +2,9 @@ package telran.java45.forum.ecouting.service;
 
 import java.util.Set;
 
+import org.mindrot.jbcrypt.BCrypt;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -11,13 +13,13 @@ import telran.java45.forum.ecouting.dto.UserAccountResponseDto;
 import telran.java45.forum.ecouting.dto.UserRegistrationDto;
 import telran.java45.forum.ecouting.dto.UserUppdateDto;
 import telran.java45.forum.ecouting.model.UserAccount;
-import telran.java45.forum.ecouting.repository.UserEcountRepository;
+import telran.java45.forum.ecouting.repository.UserAccountRepository;
 import telran.java45.forum.exception.UserNotFoundExeption;
 @Service
 @RequiredArgsConstructor
-public class UserAccountServiceImpl implements UserAccountService {
+public class UserAccountServiceImpl implements UserAccountService, CommandLineRunner {
 	
-	final UserEcountRepository repository;
+	final UserAccountRepository repository;
 	final ModelMapper modelMapper;
 	
 	@Override
@@ -46,6 +48,7 @@ public class UserAccountServiceImpl implements UserAccountService {
 	@Override
 	public UserAccountResponseDto editUser(String login, UserUppdateDto userUppdateDto) {
 		UserAccount userEcount = repository.findById(login).orElseThrow(UserNotFoundExeption::new);
+//		String  password = BCrypt.hashpw(password);
 		userEcount.setFirstName(userUppdateDto.getFirstName());
 		userEcount.setLastName(userUppdateDto.getLastName());
 		repository.save(userEcount);
@@ -69,8 +72,22 @@ public class UserAccountServiceImpl implements UserAccountService {
 	@Override
 	public void changePassword(String login, String password) {
 		UserAccount userEcount = repository.findById(login).orElseThrow(UserNotFoundExeption::new);
-		userEcount.setPassword(password);
+		String  password1 = BCrypt.hashpw(password, BCrypt.gensalt());
+
+		userEcount.setPassword(password1);
 		repository.save(userEcount);
+	}
+
+	@Override
+	public void run(String... args) throws Exception {
+		if (!repository.existsById("admin")) {
+			String password = BCrypt.hashpw("admin", BCrypt.gensalt());
+			UserAccount userAccount = new UserAccount("admin", password, "", "");
+			userAccount.addRole("MODERATOR");
+			userAccount.addRole("ADMINISTRATOR");
+			repository.save(userAccount);
+		}
+		
 	}
 
 }
